@@ -119,13 +119,13 @@ class GPTLanguageModel(nn.Module):
 
         return logits, loss
 
-    def generate(self, idx, max_new_tokens):
+    def generate(self, idx, max_new_tokens, block_size, device):
         # idx is (B, T) array of indices in the current context
         for _ in range(max_new_tokens):
             # crop idx to the last block_size tokens
             idx_cond = idx[:, -block_size:]
             # get the predictions
-            logits, loss = self(idx_cond)
+            logits, loss = self(idx_cond, device)
             # focus only on the last time step
             logits = logits[:, -1, :] # becomes (B, C)
             # apply softmax to get probabilities
